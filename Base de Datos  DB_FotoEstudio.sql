@@ -1,0 +1,76 @@
+CREATE DATABASE DB_FotoEstudio;
+
+USE DB_FotoEstudio;
+CREATE TABLE Cliente (
+   IdCliente INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+   Nombre VARCHAR(50) NOT NULL,
+   Apellido VARCHAR(50) NOT NULL,
+   Telefono VARCHAR(20) NOT NULL,
+   CI VARCHAR(20) NOT NULL ,
+   Genero Char(1) NOT NULL,
+   Email VARCHAR(50) NOT NULL,
+   Direccion VARCHAR(100) NOT NULL,
+   Tipo Varchar(50) NOT NULL,
+   CONSTRAINT UK_CI_Cliente
+   UNIQUE(CI)
+);
+
+-- CREACION DE LA TABLA PAQUETE
+CREATE TABLE Paquete (
+IdPaquete INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+CodigoPaquete VARCHAR(5) NOT NULL, -- PC01
+NombrePaquete VARCHAR(50) NOT NULL, -- Cumpleaños infantil
+Descripcion VARCHAR(50) NOT NULL, -- fotografia y video
+PrecioPaquete FLOAT NOT NULL, -- 1000 Bs
+TipoPaquete VARCHAR(50) NOT NULL, -- Básico
+Estado CHAR(1) NOT NULL, -- A
+CONSTRAINT UK_Codigo_Paquete UNIQUE(CodigoPaquete)
+);
+
+-- CREACION DE LA TABLA RESERVA
+CREATE TABLE Reserva (
+IdReserva INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+IdCliente INT NOT NULL,
+IdPaquete INT NOT NULL,
+FechaEntrada DATE NOT NULL,
+FechaEvento DATE NOT NULL,
+PrecioTotal FLOAT NOT NULL,
+Saldo FLOAT NULL,
+Estado VARCHAR(20) NOT NULL,
+CONSTRAINT FK_Reserva_Cliente
+FOREIGN KEY(IdCliente) REFERENCES Cliente(IdCliente),
+CONSTRAINT FK_Reserva_Paquete
+FOREIGN KEY(IdPaquete) REFERENCES Paquete(IdPaquete)
+);
+
+-- CREACION DE LA TABLA PAGO
+CREATE TABLE Pago (
+IdPago INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+Fecha DATE NOT NULL,
+IdReserva INT NOT NULL,
+Monto FLOAT NOT NULL,
+Descripcion VARCHAR(100) NULL,
+TipoPago VARCHAR(50) NOT NULL,
+CONSTRAINT FK_Pago_Reserva
+FOREIGN KEY(IdReserva) REFERENCES Reserva(IdReserva)
+);
+
+-- CREACION DE LA TABLA PRODUCTO
+CREATE TABLE Producto (
+IdProducto INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+Nombre VARCHAR(50) NOT NULL,
+Descripcion VARCHAR(100),
+PrecioUnitario FLOAT NOT NULL
+);
+-- CREACION DE LA TABLA DETALLE PAQUETE
+CREATE TABLE DetallePaquete (
+IdPaquete INT NOT NULL,
+IdProducto INT NOT NULL,
+PRIMARY KEY(IdPaquete, IdProducto),
+CantidadProducto INT NOT NULL,
+SubTotal FLOAT NOT NULL,
+CONSTRAINT FK_Detalle_Paquete
+FOREIGN KEY(IdPaquete) REFERENCES Paquete(IdPaquete),
+CONSTRAINT FK_DetallePaquete_Producto
+FOREIGN KEY(IdProducto) REFERENCES Producto(IdProducto)
+);
